@@ -1,0 +1,20 @@
+[
+{
+  "directory": "C:/Users/asus/Desktop/works/C++笔记/算法/build",
+  "command": "C:\\msys64\\mingw64\\bin\\cc.exe -g -o CMakeFiles\\array.dir\\array.c.obj -c C:\\Users\\asus\\Desktop\\works\\C++笔记\\算法\\hello-algo-1.0.0b5\\codes\\c\\chapter_array_and_linkedlist\\array.c",
+  "file": "C:\\Users\\asus\\Desktop\\works\\C++笔记\\算法\\hello-algo-1.0.0b5\\codes\\c\\chapter_array_and_linkedlist\\array.c",
+  "output": "CMakeFiles\\array.dir\\array.c.obj"
+},
+{
+  "directory": "C:/Users/asus/Desktop/works/C++笔记/算法/build",
+  "command": "C:\\msys64\\mingw64\\bin\\cc.exe -g -o CMakeFiles\\linked_list.dir\\linked_list.c.obj -c C:\\Users\\asus\\Desktop\\works\\C++笔记\\算法\\hello-algo-1.0.0b5\\codes\\c\\chapter_array_and_linkedlist\\linked_list.c",
+  "file": "C:\\Users\\asus\\Desktop\\works\\C++笔记\\算法\\hello-algo-1.0.0b5\\codes\\c\\chapter_array_and_linkedlist\\linked_list.c",
+  "output": "CMakeFiles\\linked_list.dir\\linked_list.c.obj"
+},
+{
+  "directory": "C:/Users/asus/Desktop/works/C++笔记/算法/build",
+  "command": "C:\\msys64\\mingw64\\bin\\cc.exe -g -o CMakeFiles\\my_list.dir\\my_list.c.obj -c C:\\Users\\asus\\Desktop\\works\\C++笔记\\算法\\hello-algo-1.0.0b5\\codes\\c\\chapter_array_and_linkedlist\\my_list.c",
+  "file": "C:\\Users\\asus\\Desktop\\works\\C++笔记\\算法\\hello-algo-1.0.0b5\\codes\\c\\chapter_array_and_linkedlist\\my_list.c",
+  "output": "CMakeFiles\\my_list.dir\\my_list.c.obj"
+}
+]
