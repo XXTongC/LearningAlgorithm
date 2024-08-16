@@ -589,3 +589,127 @@ int main()
 	std::cout << dp[n + 2 & 1][0][0];
 }
 ```
+
+## 题六
+
+![Question6-1](./pic/Question6-1.png)
+![Question6-2](./pic/Question6-2.png)
+
+问题翻译：给一个图，选择一个点作为树顶（根节点），生成一个最小代价树，其连接代价为树节点之间的距离$\times$上一个节点深度（根节点深度为1）
+
+如图：
+
+![6-1](./pic/6-1.png)
+
+***
+
+此题难点在于问题的转换，如果按照题意进行一个裸的状态压缩去做那么将会有三层循环$2^{36}$的计算次数，是一定会TLE的。
+
+题目可转换为任意两个点之间开辟道路，根据题意似乎只能在有道路的两个节点之间连线，但实际上这个限制条件并不影响找打最小代价。
+
+假设无限制得出的最小代价为$A$，题意限制下得到的最小代价是$B$
+
+证明：假设我们可以在任意两个节点之间开辟道路，那么在题意限制下得到的方案数一定是前者的子集，那么即可得出$A\leq B$
+
+反过来，假设在题意限制下我们得到的最小树如图：
+
+![6-2](./pic/6-2.png)
+
+若存在一条更短边使得4可以连向2，那么2-->4的代价会严格变小，因为边长$\times$节点深度时节点深度也在变小，所以得到$B\leq A$
+
+综上1、2，得证$A=B$
+
+***
+
+那么此时开始我们的DP定义
+
+一、状态表示
+
+1. dp[i][j]：表示当前状态为i 时（状态是用2进制表示节点选与不选），树的层数为j 的代价
+2. 属性：最小代价
+
+二、状态转移
+
+假设dp[i][j]时第j层的状态为$k$，那么前j层的状态即为$i\oplus k$，此时因为确定了k以及层数，那么代价中k到$i\oplus k$的最小代价即是确定的定值，那么变化的部分就是$i\oplus k$这一部分形态不同导致的，同时根据我们对dp的定义我们可以得到，这一部分的最小值为dp[$i\oplus k$][j-1]。
+
+此时我们即可得出dp[i][j] = min(dp[i][j], dp[$i\oplus k$][j-1])
+
+所以此时我们还需要枚举i的子集来得到k，这里有一个枚举k的技巧：k = (i - 1) & i; k; k = (k - 1) & i
+
+当然，可以提前预处理好第j层状态k的最小代价
+
+```cpp
+#pragma GCC optimize(2)
+#include <iostream>
+#include <cstring>
+#include <algorithm>
+const int N = 14, M = 1 << 12;
+int map[N][N];
+int g[N][M];
+int dp[M][N];
+int n, m;
+int main()
+{
+	std::ios::sync_with_stdio(false);
+	std::cin.tie(0);
+	std::cout.tie(0);
+	std::memset(map, 0x3f, sizeof map);
+	std::cin >> n >> m;
+	for (int i = 0; i <= n; i++) map[i][i] = 0;
+	for(int i = 0;i<m;i++)
+	{
+		int a, b, c;
+		std::cin >> a >> b >> c;
+		map[a][b] = map[b][a] = std::min(c,map[b][a]);
+	}
+
+	std::memset(g, 0x3f, sizeof g);
+	//预处理第i个节点到集合j的最小代价
+	for(int i = 1;i<=n;i++)
+	{
+		for(int j = 0;j<1<<n;j++)
+		{
+			for(int k = 0;k<n;k++)
+			{
+				if(j>>k&1)
+				{
+					g[i][j] = std::min(g[i][j], map[i][k+1]);
+				}
+			}
+		}
+	}
+	std::memset(dp, 0x3f, sizeof dp);
+	//初始化dp，这一步千万不能忘
+	for (int i = 0; i <= n; i++) dp[i<<i][0] = 0;
+	for(int i = 1;i<1<<n;i++)
+	{
+		for (int j = (i - 1) & i; j; j = (j - 1) & i)
+		{
+			int last = i ^ j,cost = 0;
+			for(int k = 0;k<n;k++)
+			{
+				//先计算j代价的最小值
+				if(j>>k&1)
+				{
+					cost += g[k+1][last];
+					//如果代价过高也就是两点之间无连通路时我们就不用计算了
+					if(cost>=0x3f3f3f3f) break;
+				}	
+			}
+			if(cost>=0x3f3f3f3f) continue;
+			//枚举层数
+			for(int k = 1;k<=n;k++)
+			{
+				dp[i][k] = std::min(dp[i][k], dp[last][k - 1] + cost * k) ;
+			}
+		}
+	}
+	int res = 0x3f3f3f3f;
+	//找出满载状态下最小的代价，以层数为变量
+	for(int i = 0;i<=n;i++)
+	{
+		res = std::min(res, dp[(1 << n) - 1][i]);
+	}
+	std::cout << res;
+}
+```

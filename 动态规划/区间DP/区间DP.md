@@ -110,3 +110,70 @@ int main()
 	std::cout << find(1,n);
 }
 ```
+
+## 题二
+
+![Question2-1](./pic/Question2-1.png)
+![Question2-2](./pic/Question2-2.png)
+
+与算法基础课中的石子合并不同的地方在于此题的石堆摆放是圆形的，也就是说首尾相接，正常的遍历方式就会漏掉很多合并方案。
+
+对于这类环形问题，一个经典的解决方案就是将环拆成链，而后负责一份数据接到尾部以模拟环，如图：
+
+![2-1](./pic/2-1.png)
+
+那么我们以题一中的方法一可写出代码：
+
+```cpp
+#pragma GCC optimize(2)
+#include <iostream>
+#include <cstring>
+#include <algorithm>
+
+const int N = 210;
+//注意扩大空间为两倍
+int q[2*N];
+int s[2*N];
+int dp[2*N][2*N],pd[2*N][2*N];
+int n;
+int main()
+{
+    std::ios::sync_with_stdio(false);
+    std::cin.tie(0);
+    std::cout.tie(0);
+    
+    std::cin>>n;
+    for(int i = 1;i<=n;i++)
+    {
+        std::cin>>q[i];
+        q[n+i] = q[i];
+    }
+    for(int i = 1;i<=2*n;i++)
+    {
+        s[i] = q[i] + s[i-1];
+    }
+	//从长度为2开始枚举，长度最长为n
+    for(int len = 2;len<=n;len++)
+    {
+		//枚举起点并判断终点是否越界
+        for(int l = 1;l+len-1<2*n;l++)
+        {
+            int r = l + len -1;
+            dp[l][r] = 1e9;
+            pd[l][r] = -1e9;
+			//注意i!=r，毕竟区间[l, r]一定会被分成两份
+            for(int i = l;i<r;i++)
+            {
+                dp[l][r] = std::min(dp[l][r], dp[l][i] + dp[i+1][r] + s[r] - s[l-1]);
+                pd[l][r] = std::max(pd[l][r], pd[l][i] + pd[i+1][r] + s[r] - s[l - 1]);
+            }
+        }
+    }
+    int minres = 0x3f3f3f3f, maxres = -0x3f3f3f3f;
+    for(int i = 1;i<=n;i++){ 
+        minres = std::min(minres, dp[i][i+n-1]);
+        maxres = std::max(maxres, pd[i][i+n-1]);
+    }
+    std::cout<<minres<<std::endl<<maxres;
+}
+```

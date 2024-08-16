@@ -44,8 +44,11 @@ int main()
 ![题二](./pic/Question2.png)
 
 和树很像
+
 ## 第一种搜索顺序
+
 按列搜索，我们每一列必定要放一个
+
 ```cpp
 #include <iostream>
 const int N = 20;
@@ -90,7 +93,9 @@ int main()
 ```
 
 ## 第二种搜索顺序
+
 按位搜索
+
 ```cpp
 #include <iostream>
 const int N = 10;
@@ -133,9 +138,13 @@ int main()
 }
 
 ```
+
 ## 树与图的深度优先遍历
+
 ![题三](./pic/Question3.png)
+
 树是一种特殊的图，所以我们一并使用图的思路来做。而图的深搜有一定的框架：
+
 ```cpp
 //树和图深搜的基本框架
 void dfs(int u)
@@ -148,8 +157,11 @@ void dfs(int u)
 	}
 }
 ```
+
 现在我们回到题目，题目让我们求得值是什么意思呢？比如当我们把书画出来后，我们将4删除得话就只剩下 1-7-2-8-5、3-9和6是连在一起的，此时他们个数的最大值是5，也就是第一个连通块，我们要求的就是最小的这个最大值。
+
 ![题三-1](./pic/Question3-1.png)
+
 ```cpp
 #include <cstring>
 #include <iostream>
@@ -209,6 +221,78 @@ int main()
 		add(b, a);		//无向树，需要加入两条边
 	}
 	dfs(1);
+	std::cout << ans;
+}
+```
+
+
+## 题四
+
+![Question4](./pic/Question4.png)
+
+此题来源于牛客多校第五场
+
+题意：给一给无向图，而后可自定义给任意节点以任何权值，可自选起点，每次移动到当前节点相连的节点中权值最小的节点，直至无法再移动，求经过的最多的节点数。
+
+题解：这题题眼在于发现走下一步时，该节点一定在与当前节点连接的情况下不会连向已走过的节点。如此进行 $dfs$ 即可。
+
+```cpp
+#pragma GCC optimize(2)
+#include <iostream>
+#include <vector>
+const int N = 45;
+std::vector<int> g[N];
+int st[N];
+int n, m;
+
+int ans = 1;
+void dfs(int u, int len)
+{
+	ans = std::max(len, ans);
+	for (auto& t : g[u])
+	{
+		int op = true;
+		for(auto&p : g[t])
+		{
+			if(u!=p&&st[p])
+			{
+				op = false;
+				break;
+			}
+		}
+		if(op)
+		{
+			if(!st[t])
+			{
+				st[t] = true;
+				dfs(t, len + 1);
+				st[t] = false;
+			}
+		}
+	}
+}
+
+int main()
+{
+	std::ios::sync_with_stdio(false);
+	std::cin.tie(0);
+	std::cout.tie(0);
+	std::cin >> n >> m;
+	for (int i = 0; i < m; i++)
+	{
+		int u, v;
+		std::cin >> u >> v;
+		g[u].push_back(v);
+		g[v].push_back(u);
+
+	}
+	for (int i = 1; i <= n; i++)
+	{
+		st[i] = true;
+		dfs(i, 1);
+		st[i] = false;
+		
+	}
 	std::cout << ans;
 }
 ```
