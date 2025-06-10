@@ -1,12 +1,19 @@
 # spfa算法
-很多时候我们可以使用spfa算法过掉大部分的图题     
-spfa算法实际上是对bellman_ford算法的一个优化，因为bellman_ford算法遍历了邻接矩阵的所有元素，但实际上我们不需要这么做。    
+
+很多时候我们可以使用spfa算法过掉大部分的图题。
+
+spfa算法实际上是对bellman_ford算法的一个优化，因为bellman_ford算法遍历了邻接矩阵的所有元素，但实际上我们不需要这么做。
+
 ![题一](./pic/Question1.png)
+
 根据我们的状态更新式：
+
 ```cpp
 dist[b] = std::min(dist[b], dist[a] + w);
 ```
-我们可以得知，只有当dist[a]变小时，我们的dist[b]才会变小，所以我们使用宽度优先搜索来进行优化 ———— 队列     
+
+我们可以得知，只有当dist[a]变小时，我们的dist[b]才会变小，所以我们使用宽度优先搜索来进行优化 ———— 队列
+
 ```cpp
 #include <iostream>
 #include <queue>
@@ -70,10 +77,15 @@ int main()
 	else std::cout << t;
 }
 ```
+
 ***
+
 ## 题二：判断负环
-![题二](./pic/Question2.png)   
+
+![题二](./pic/Question2.png)
+
 根据之前介绍的，spfa算法会遍历每个边，其k的意义就是从起点到更新点最少经过的边。那么在此题中，我们就可以利用这个性质，记录边的数量来判断是否有负环（当有n个点的图需要大于n-1的边才能到达时，由于抽屉原理那么我们的路径上一定至少两次经过了同一个点，此时就出先了负环）。
+
 ```cpp
 #include <iostream>
 #include <queue>
@@ -139,5 +151,3 @@ int main()
 	else std::cout << "Yes";
 }
 ```
-
-
